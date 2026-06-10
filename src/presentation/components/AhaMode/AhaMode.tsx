@@ -1,9 +1,12 @@
 import { motion } from 'motion/react';
+import { QuickInput } from './QuickInput';
+import { NodeStack } from './NodeStack';
+import { QuickZenButton } from './QuickZenButton';
 
 export function AhaMode() {
   return (
     <motion.div
-      className="flex flex-col items-center justify-center w-full h-full"
+      className="flex flex-col items-center w-full h-full pt-16 pb-32 overflow-y-auto"
       style={{ backgroundColor: 'var(--bg)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -16,17 +19,10 @@ export function AhaMode() {
         </h1>
         <p style={{ color: 'var(--text-muted)' }}>倾倒你的想法，无需整理</p>
       </div>
-      <div className="w-full max-w-lg px-4">
-        <textarea
-          className="w-full h-32 p-4 rounded-lg resize-none focus:outline-none"
-          style={{
-            backgroundColor: 'var(--surface)',
-            color: 'var(--text)',
-            border: '1px solid var(--border)',
-          }}
-          placeholder="在这里写下任何想法...&#10;不需要结构、分类、关联。&#10;按下 Enter 保存。"
-        />
-      </div>
+
+      <NodeStack />
+      <QuickInput />
+      <QuickZenButton />
     </motion.div>
   );
 }

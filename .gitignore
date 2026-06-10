@@ -32,3 +32,6 @@ test-results/
 playwright-report/
 src-tauri/gen/
 src-tauri/target/
+
+# TypeScript
+*.tsbuildinfo
