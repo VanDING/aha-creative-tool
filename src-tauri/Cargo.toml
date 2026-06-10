@@ -1,0 +1,31 @@
+[package]
+name = "aha-creative-tool"
+version = "0.1.0"
+description = "创意过程的可视化Git客户端——从思考到实现的工作台"
+authors = ["AHA Dev"]
+edition = "2021"
+
+[lib]
+name = "aha_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-fs = "2"
+tauri-plugin-keyring = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+git2 = { version = "0.21", features = ["vendored-libgit2"] }
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+notify = "7"
+
+# Fallback if tauri-plugin-keyring is unstable:
+# keyring = "3"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

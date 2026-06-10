@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-aha-bg: #faf8f5;
+  --color-aha-surface: #ffffff;
+  --color-aha-text: #1a1a1a;
+  --color-aha-text-muted: #6b6b6b;
+  --color-aha-border: #e5e0d8;
+  --color-aha-accent: #d4a574;
+  --color-aha-accent-hover: #c49563;
+  --color-aha-zen-bg: #1a1a2e;
+  --color-aha-zen-surface: #16213e;
+  --color-aha-zen-text: #e8e8e8;
+  --color-aha-zen-accent: #7ec8e3;
+  --color-aha-ai: #8b5cf6;
+  --color-aha-ai-light: #ede9fe;
+  --color-aha-confirmed: #22c55e;
+  --color-aha-suggested: #f59e0b;
+}
+
+/* Aha mode — warm, calm */
+[data-mode="aha"] {
+  --bg: var(--color-aha-bg);
+  --surface: var(--color-aha-surface);
+  --text: var(--color-aha-text);
+  --text-muted: var(--color-aha-text-muted);
+  --border: var(--color-aha-border);
+  --accent: var(--color-aha-accent);
+  --accent-hover: var(--color-aha-accent-hover);
+}
+
+/* Zen mode — dark, focused */
+[data-mode="zen"] {
+  --bg: var(--color-aha-zen-bg);
+  --surface: var(--color-aha-zen-surface);
+  --text: var(--color-aha-zen-text);
+  --text-muted: #9ca3af;
+  --border: #1f2937;
+  --accent: var(--color-aha-zen-accent);
+  --accent-hover: #5ab8d9;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}
