@@ -102,4 +102,12 @@ describe('ApplicationService', () => {
     const updatedIndex = mocks.writeGraphIndex.mock.calls[0][1];
     expect(updatedIndex.nodes[0].status).toBe('archived');
   });
+
+  it('exportDeliveryPackage returns fallback when no project path', async () => {
+    const service = new ApplicationService();
+    const result = await service.exportDeliveryPackage('branch-1', null);
+    expect(result.projectContext).toContain('未关联项目');
+    expect(result.developmentPack).toContain('未关联项目');
+    expect(mocks.writeNode).not.toHaveBeenCalled();
+  });
 });

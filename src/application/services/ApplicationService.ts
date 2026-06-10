@@ -9,7 +9,7 @@
  * layer update the store after awaiting these methods.
  */
 
-import { createNode, buildGraphData } from '@domain/graph-engine/GraphEngine';
+import { createNode, buildGraphData, findShortestPath } from '@domain/graph-engine/GraphEngine';
 import { generateSlug } from '@domain/graph-engine/NodeManager';
 import type { GraphData, ThoughtNode } from '@domain/graph-engine/types';
 import {
@@ -201,6 +201,95 @@ export class ApplicationService {
 
     const git = new TauriGitService(projectPath);
     await git.createTag(name, `标记主干方案: ${name}`);
+  }
+
+  /**
+   * Export a delivery package for a main branch.
+   * Generates PROJECT_CONTEXT.md + DEVELOPMENT_PACK.md in exports/.
+   */
+  async exportDeliveryPackage(
+    mainBranchId: string,
+    projectPath: string | null,
+    graphData?: GraphData,
+  ): Promise<{ projectContext: string; developmentPack: string }> {
+    if (!projectPath) {
+      return {
+        projectContext: '# PROJECT_CONTEXT.md\n\n（未关联项目）',
+        developmentPack: '# DEVELOPMENT_PACK.md\n\n（未关联项目）',
+      };
+    }
+
+    const data = graphData ?? (await this.buildGraphData(projectPath));
+    const branch = data.mainBranches.find((b) => b.id === mainBranchId);
+    const rootNodeId = branch?.nodeIds[0];
+
+    if (!rootNodeId) {
+      throw new Error('Main branch not found or empty');
+    }
+
+    // Collect path from root to deepest leaf
+    const leafCandidates = data.nodes.filter((n) => data.edges.every((e) => e.sourceId !== n.id));
+    let pathNodeIds: string[] = [rootNodeId];
+    for (const leaf of leafCandidates) {
+      const path = findShortestPath(rootNodeId, leaf.id, data);
+      if (path.length > pathNodeIds.length) {
+        pathNodeIds = path;
+      }
+    }
+
+    const pathNodes = pathNodeIds
+      .map((id) => data.nodes.find((n) => n.id === id))
+      .filter(Boolean) as ThoughtNode[];
+
+    const nodeSummaries = pathNodes
+      .map((n, idx) => `${idx + 1}. **${n.title}**\n${n.content}`)
+      .join('\n\n');
+
+    const constitutionPath = `${projectPath}/project-constitution.md`;
+    let constitution = '';
+    try {
+      constitution = await this.fs.readNode(constitutionPath);
+    } catch {
+      constitution = '（项目宪章未找到）';
+    }
+
+    const projectContext = `# PROJECT_CONTEXT.md
+
+## 项目宪章
+${constitution}
+
+## 主干方案：${branch?.name ?? '未命名'}
+
+${nodeSummaries}
+`;
+
+    const developmentPack = `# DEVELOPMENT_PACK.md
+
+## 目标
+基于主干方案「${branch?.name ?? '未命名'}」生成可执行交付物。
+
+## 实施步骤
+${pathNodes.map((n, idx) => `${idx + 1}. ${n.title}`).join('\n')}
+
+## 风险提示
+- 本方案基于当前思考阶段的收敛结果，后续可能随认知迭代而调整。
+- 建议定期回顾项目宪章，确保实施不偏离核心目标。
+
+## 参考资料
+- 项目路径：${projectPath}
+- 生成时间：${new Date().toISOString()}
+`;
+
+    const exportsDir = `${projectPath}/exports`;
+    await this.fs.writeNode(`${exportsDir}/PROJECT_CONTEXT.md`, projectContext);
+    await this.fs.writeNode(`${exportsDir}/DEVELOPMENT_PACK.md`, developmentPack);
+
+    const git = new TauriGitService(projectPath);
+    await git.add('exports/PROJECT_CONTEXT.md');
+    await git.add('exports/DEVELOPMENT_PACK.md');
+    await git.commit(`导出构建包: ${branch?.name ?? mainBranchId}`);
+
+    return { projectContext, developmentPack };
   }
 }
 

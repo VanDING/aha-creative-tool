@@ -7,6 +7,7 @@
  * - Canvas zoom / pan
  * - fitView on first render
  * - Click-to-select nodes
+ * - Right-click context menu on nodes
  */
 
 import { useEffect, useRef } from 'react';
@@ -18,9 +19,11 @@ import { toG6Format } from '@domain/graph-engine/GraphEngine';
 export interface GraphCanvasProps {
   /** Callback when a node is clicked. */
   onNodeClick?: (nodeId: string) => void;
+  /** Callback when a node is right-clicked. */
+  onNodeContextMenu?: (nodeId: string, x: number, y: number) => void;
 }
 
-export function GraphCanvas({ onNodeClick }: GraphCanvasProps) {
+export function GraphCanvas({ onNodeClick, onNodeContextMenu }: GraphCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<G6Graph | null>(null);
   const graphData = useAppStore((state) => state.graphData);
@@ -85,6 +88,18 @@ export function GraphCanvas({ onNodeClick }: GraphCanvasProps) {
       }
     });
 
+    graph.on('node:contextmenu', (evt: unknown) => {
+      const event = evt as {
+        target?: { id?: string };
+        clientX?: number;
+        clientY?: number;
+      };
+      const targetId = event.target?.id;
+      if (targetId && event.clientX != null && event.clientY != null) {
+        onNodeContextMenu?.(targetId, event.clientX, event.clientY);
+      }
+    });
+
     graph.on('canvas:click', () => {
       selectNode(null);
     });
@@ -104,7 +119,7 @@ export function GraphCanvas({ onNodeClick }: GraphCanvasProps) {
       graph.destroy();
       graphRef.current = null;
     };
-  }, [selectNode, onNodeClick]);
+  }, [selectNode, onNodeClick, onNodeContextMenu]);
 
   // Sync graph data whenever store changes.
   useEffect(() => {
