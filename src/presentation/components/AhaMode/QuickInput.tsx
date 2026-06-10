@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAppStore } from '@presentation/stores/appStore';
-import { createNode } from '@domain/graph-engine/GraphEngine';
+import { applicationService } from '@application/services/ApplicationService';
 
 export interface QuickInputProps {
   onSubmit?: (content: string) => void;
@@ -17,13 +17,13 @@ export function QuickInput({ onSubmit }: QuickInputProps) {
   const ahaInputBuffer = useAppStore((state) => state.ahaInputBuffer);
   const setAhaInputBuffer = useAppStore((state) => state.setAhaInputBuffer);
   const addNode = useAppStore((state) => state.addNode);
+  const projectPath = useAppStore((state) => state.currentProjectPath);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const raw = ahaInputBuffer.trim();
     if (!raw) return;
 
-    const title = raw.split('\n')[0].slice(0, 60);
-    const node = createNode(title, raw);
+    const node = await applicationService.handleNewThought(raw, projectPath);
     addNode(node);
     onSubmit?.(raw);
     setAhaInputBuffer('');
@@ -35,7 +35,7 @@ export function QuickInput({ onSubmit }: QuickInputProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit();
+      void handleSubmit();
     }
   };
 
@@ -71,7 +71,7 @@ export function QuickInput({ onSubmit }: QuickInputProps) {
         />
         <button
           type="button"
-          onClick={handleSubmit}
+          onClick={() => void handleSubmit()}
           disabled={!ahaInputBuffer.trim()}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
