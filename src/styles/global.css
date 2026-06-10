@@ -40,6 +40,18 @@
   --accent-hover: #5ab8d9;
 }
 
+/* Explicit dark theme override (used by the theme toggle) */
+html[data-theme='dark'] [data-mode='aha'],
+html[data-theme='dark'] [data-mode='zen'] {
+  --bg: #111827;
+  --surface: #1f2937;
+  --text: #f3f4f6;
+  --text-muted: #9ca3af;
+  --border: #374151;
+  --accent: #7ec8e3;
+  --accent-hover: #5ab8d9;
+}
+
 body {
   margin: 0;
   padding: 0;

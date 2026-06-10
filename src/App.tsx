@@ -3,10 +3,13 @@ import { AhaMode } from '@presentation/components/AhaMode/AhaMode';
 import { ZenMode } from '@presentation/components/ZenMode/ZenMode';
 import { ModeSwitch } from '@presentation/components/common/ModeSwitch';
 import { useAppStore } from '@presentation/stores/appStore';
+import { useThemeEffect } from '@presentation/stores/themeStore';
 
 function App() {
   const mode = useAppStore((state) => state.mode);
   const setMode = useAppStore((state) => state.setMode);
+
+  useThemeEffect();
 
   return (
     <div data-mode={mode} style={{ width: '100vw', height: '100vh' }}>

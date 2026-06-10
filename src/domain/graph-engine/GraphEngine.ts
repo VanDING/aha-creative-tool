@@ -254,21 +254,30 @@ export function buildGraphData(
   };
 }
 
+export interface ToG6FormatOptions {
+  /** Render labels and strokes for a dark background. */
+  dark?: boolean;
+}
+
 /**
  * Convert domain GraphData into G6 v5 compatible graph data.
  */
-export function toG6Format(graphData: GraphData): G6GraphData {
+export function toG6Format(graphData: GraphData, options?: ToG6FormatOptions): G6GraphData {
+  const dark = options?.dark ?? false;
+
   const statusColor: Record<NodeStatus, string> = {
-    active: '#ffffff',
-    archived: '#9ca3af',
+    active: dark ? '#1f2937' : '#ffffff',
+    archived: '#6b7280',
     'main-branch': '#22c55e',
   };
 
   const statusStroke: Record<NodeStatus, string> = {
-    active: '#d4a574',
-    archived: '#6b7280',
+    active: dark ? '#7ec8e3' : '#d4a574',
+    archived: '#4b5563',
     'main-branch': '#16a34a',
   };
+
+  const labelFill = dark ? '#e5e7eb' : '#1a1a1a';
 
   const nodes: G6NodeData[] = graphData.nodes.map((node) => {
     const base: G6NodeData = {
@@ -283,7 +292,7 @@ export function toG6Format(graphData: GraphData): G6GraphData {
         lineWidth: 1,
         r: 12,
         labelText: node.title,
-        labelFill: '#6b7280',
+        labelFill: dark ? '#9ca3af' : '#6b7280',
         opacity: 0.6,
       };
     } else {
@@ -293,9 +302,10 @@ export function toG6Format(graphData: GraphData): G6GraphData {
         lineWidth: 2,
         r: node.status === 'main-branch' ? 28 : 24,
         labelText: node.title,
-        labelFill: '#1a1a1a',
+        labelFill,
       };
     }
+
     return base;
   });
 

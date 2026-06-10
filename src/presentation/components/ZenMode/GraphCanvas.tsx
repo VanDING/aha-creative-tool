@@ -2,18 +2,19 @@
  * AHA Zen Mode — G6 v5 Graph Canvas
  *
  * Renders the graph from appStore.graphData and supports:
- * - Force-directed layout
- * - Node drag
- * - Canvas zoom / pan
- * - fitView on first render
- * - Click-to-select nodes
- * - Right-click context menu on nodes
+ * - Force-directed / tree / dendrogram layouts
+ * - Node drag, canvas zoom / pan, fitView
+ * - Click-to-select and right-click context menu
+ * - Hover and selected states
+ * - Dark-mode-aware labels
  */
 
 import { useEffect, useRef } from 'react';
 import { Graph } from '@antv/g6';
 import type { Graph as G6Graph } from '@antv/g6';
 import { useAppStore } from '@presentation/stores/appStore';
+import { useThemeStore } from '@presentation/stores/themeStore';
+import { useGraphController } from './GraphControllerContext';
 import { toG6Format } from '@domain/graph-engine/GraphEngine';
 
 export interface GraphCanvasProps {
@@ -28,6 +29,12 @@ export function GraphCanvas({ onNodeClick, onNodeContextMenu }: GraphCanvasProps
   const graphRef = useRef<G6Graph | null>(null);
   const graphData = useAppStore((state) => state.graphData);
   const selectNode = useAppStore((state) => state.selectNode);
+  const hoverNode = useAppStore((state) => state.hoverNode);
+  const selectedNodeId = useAppStore((state) => state.selectedNodeId);
+  const hoveredNodeId = useAppStore((state) => state.hoveredNodeId);
+  const activeLayoutType = useAppStore((state) => state.activeLayoutType);
+  const resolvedTheme = useThemeStore((state) => state.resolved);
+  const { register, unregister } = useGraphController();
 
   // Initialize G6 graph once.
   useEffect(() => {
@@ -47,10 +54,21 @@ export function GraphCanvas({ onNodeClick, onNodeContextMenu }: GraphCanvasProps
       node: {
         type: 'circle',
         style: {
-          labelFill: '#1a1a1a',
           labelFontSize: 12,
           labelOffsetY: 8,
           cursor: 'pointer',
+        },
+        state: {
+          selected: {
+            lineWidth: 4,
+            stroke: resolvedTheme === 'dark' ? '#7ec8e3' : '#d4a574',
+            shadowColor: resolvedTheme === 'dark' ? '#7ec8e3' : '#d4a574',
+            shadowBlur: 10,
+          },
+          hover: {
+            lineWidth: 3,
+            stroke: resolvedTheme === 'dark' ? '#7ec8e3' : '#d4a574',
+          },
         },
       },
       edge: {
@@ -78,6 +96,7 @@ export function GraphCanvas({ onNodeClick, onNodeContextMenu }: GraphCanvasProps
     });
 
     graphRef.current = graph;
+    register(graph);
 
     graph.on('node:click', (evt: unknown) => {
       const event = evt as { target?: { id?: string }; targetType?: string };
@@ -104,35 +123,73 @@ export function GraphCanvas({ onNodeClick, onNodeContextMenu }: GraphCanvasProps
       selectNode(null);
     });
 
-    graph.render().catch((err: Error) => {
-      console.error('Graph render failed:', err);
+    graph.on('node:mouseenter', (evt: unknown) => {
+      const event = evt as { target?: { id?: string } };
+      const targetId = event.target?.id;
+      if (targetId) hoverNode(targetId);
     });
+
+    graph.on('node:mouseleave', () => {
+      hoverNode(null);
+    });
+
+    void graph.render();
 
     const handleResize = () => {
       graph.resize();
-      graph.fitView();
+      void graph.fitView();
     };
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      unregister();
       graph.destroy();
       graphRef.current = null;
     };
-  }, [selectNode, onNodeClick, onNodeContextMenu]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectNode, hoverNode, onNodeClick, onNodeContextMenu, register, unregister]);
 
   // Sync graph data whenever store changes.
   useEffect(() => {
     const graph = graphRef.current;
     if (!graph) return;
 
-    const g6Data = toG6Format(graphData);
+    const g6Data = toG6Format(graphData, { dark: resolvedTheme === 'dark' });
     // Cast to G6's internal GraphData shape; our G6GraphData is structurally compatible.
     graph.setData(g6Data as never);
-    graph.render().catch((err: Error) => {
-      console.error('Graph update failed:', err);
-    });
-  }, [graphData]);
+    void graph.render();
+  }, [graphData, resolvedTheme]);
+
+  // React to layout type changes.
+  useEffect(() => {
+    const graph = graphRef.current;
+    if (!graph) return;
+
+    graph.setLayout({
+      type: activeLayoutType,
+      ...(activeLayoutType === 'force'
+        ? { linkDistance: 120, nodeStrength: -200, edgeStrength: 0.2, collide: { padding: 20 } }
+        : {}),
+    } as never);
+    void graph.render();
+  }, [activeLayoutType]);
+
+  // Apply selection / hover states.
+  useEffect(() => {
+    const graph = graphRef.current;
+    if (!graph) return;
+
+    for (const node of graphData.nodes) {
+      void graph.setElementState(node.id, []);
+    }
+    if (selectedNodeId) {
+      void graph.setElementState(selectedNodeId, 'selected');
+    }
+    if (hoveredNodeId && hoveredNodeId !== selectedNodeId) {
+      void graph.setElementState(hoveredNodeId, 'hover');
+    }
+  }, [selectedNodeId, hoveredNodeId, graphData]);
 
   return (
     <div

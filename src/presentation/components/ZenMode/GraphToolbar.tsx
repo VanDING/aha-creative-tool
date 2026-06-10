@@ -2,13 +2,20 @@
  * Zen Mode — Floating toolbar for graph controls.
  */
 
-import { ZoomIn, ZoomOut, Maximize, LayoutGrid } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize, LayoutGrid, Sparkles, Moon, Sun } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAppStore } from '@presentation/stores/appStore';
+import { useThemeStore } from '@presentation/stores/themeStore';
+import { useGraphController } from './GraphControllerContext';
 
 export function GraphToolbar() {
   const activeLayout = useAppStore((state) => state.activeLayoutType);
   const setLayoutType = useAppStore((state) => state.setLayoutType);
+  const openSearch = useAppStore((state) => state.openSearch);
+  const openExport = useAppStore((state) => state.openExport);
+  const openSummary = useAppStore((state) => state.openSummary);
+  const { zoomIn, zoomOut, fitView } = useGraphController();
+  const { resolved, toggle } = useThemeStore();
 
   return (
     <motion.div
@@ -21,11 +28,28 @@ export function GraphToolbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      <ToolbarButton icon={<ZoomIn size={18} />} label="放大" onClick={() => {}} />
-      <ToolbarButton icon={<ZoomOut size={18} />} label="缩小" onClick={() => {}} />
-      <ToolbarButton icon={<Maximize size={18} />} label="自适应" onClick={() => {}} />
+      <ToolbarButton icon={<ZoomIn size={18} />} label="放大" onClick={() => zoomIn()} />
+      <ToolbarButton icon={<ZoomOut size={18} />} label="缩小" onClick={() => zoomOut()} />
+      <ToolbarButton icon={<Maximize size={18} />} label="自适应" onClick={() => fitView()} />
       <div className="w-px h-5 mx-1" style={{ backgroundColor: 'var(--border)' }} />
       <LayoutSelector value={activeLayout} onChange={setLayoutType} />
+      <div className="w-px h-5 mx-1" style={{ backgroundColor: 'var(--border)' }} />
+      <ToolbarButton icon={<Sparkles size={18} />} label="Summary" onClick={() => openSummary()} />
+      <ToolbarButton
+        icon={resolved === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        label="切换主题"
+        onClick={() => toggle()}
+      />
+      <ToolbarButton
+        icon={<span className="text-xs font-bold">⌘F</span>}
+        label="搜索"
+        onClick={() => openSearch()}
+      />
+      <ToolbarButton
+        icon={<span className="text-xs font-bold">⌘E</span>}
+        label="导出"
+        onClick={() => openExport()}
+      />
     </motion.div>
   );
 }

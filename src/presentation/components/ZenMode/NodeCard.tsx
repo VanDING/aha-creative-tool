@@ -5,6 +5,7 @@
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAppStore } from '@presentation/stores/appStore';
+import type { NodeStatus } from '@domain/graph-engine/types';
 
 export function NodeCard() {
   const selectedNodeId = useAppStore((state) => state.selectedNodeId);
@@ -28,9 +29,12 @@ export function NodeCard() {
           transition={{ duration: 0.25 }}
         >
           <div className="flex items-start justify-between mb-3">
-            <h3 className="text-lg font-semibold pr-4" style={{ color: 'var(--text)' }}>
-              {node.title}
-            </h3>
+            <div className="flex items-center gap-2 pr-4">
+              <StatusBadge status={node.status} />
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>
+                {node.title}
+              </h3>
+            </div>
             <button
               type="button"
               onClick={() => selectNode(null)}
@@ -70,5 +74,28 @@ export function NodeCard() {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+function StatusBadge({ status }: { status: NodeStatus }) {
+  const labels: Record<NodeStatus, string> = {
+    active: '活跃',
+    archived: '已归档',
+    'main-branch': '主干',
+  };
+
+  const colors: Record<NodeStatus, { bg: string; text: string }> = {
+    active: { bg: 'var(--color-aha-ai-light)', text: 'var(--color-aha-ai)' },
+    archived: { bg: '#f3f4f6', text: '#6b7280' },
+    'main-branch': { bg: '#dcfce7', text: '#16a34a' },
+  };
+
+  return (
+    <span
+      className="px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wide"
+      style={{ backgroundColor: colors[status].bg, color: colors[status].text }}
+    >
+      {labels[status]}
+    </span>
   );
 }

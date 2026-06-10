@@ -1,9 +1,13 @@
 import { motion } from 'motion/react';
 import { QuickInput } from './QuickInput';
+import { MobileQuickInput } from './MobileQuickInput';
 import { NodeStack } from './NodeStack';
 import { QuickZenButton } from './QuickZenButton';
+import { useMediaQuery } from '@presentation/hooks/useMediaQuery';
 
 export function AhaMode() {
+  const isMobile = useMediaQuery('(max-width: 640px)');
+
   return (
     <motion.div
       className="flex flex-col items-center w-full h-full pt-16 pb-32 overflow-y-auto"
@@ -21,7 +25,7 @@ export function AhaMode() {
       </div>
 
       <NodeStack />
-      <QuickInput />
+      {isMobile ? <MobileQuickInput /> : <QuickInput />}
       <QuickZenButton />
     </motion.div>
   );
