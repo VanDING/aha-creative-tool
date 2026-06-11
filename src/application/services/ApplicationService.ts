@@ -114,6 +114,29 @@ export class ApplicationService {
   }
 
   /**
+   * Handle batch thought input (Aha mode with splitter).
+   * Splits raw input into multiple nodes, writes each, returns all.
+   */
+  async handleNewThoughts(
+    raw: string,
+    projectPath: string | null,
+  ): Promise<ThoughtNode[]> {
+    const { splitIdeas } = await import('@domain/idea-splitter/IdeaSplitter');
+    const items = splitIdeas(raw);
+    if (items.length === 0) return [];
+
+    const nodes: ThoughtNode[] = [];
+    for (const item of items) {
+      const node = await this.handleNewThought(item.content, projectPath);
+      // Override title with splitter's shorter title (handleNewThought takes first line)
+      node.title = item.title;
+      nodes.push(node);
+    }
+
+    return nodes;
+  }
+
+  /**
    * Confirm an AI extension as a real branch.
    */
   async handleBranchConfirmation(
