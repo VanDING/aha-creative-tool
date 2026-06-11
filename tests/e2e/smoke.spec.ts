@@ -5,9 +5,10 @@ test.describe('AHA Smoke Tests', () => {
     await page.goto('/');
   });
 
-  test('loads aha mode with heading and quick input', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'AHA' })).toBeVisible();
+  test('loads aha mode with chat and card flow', async ({ page }) => {
+    await expect(page.getByText('AHA-AI')).toBeVisible();
     await expect(page.getByPlaceholder(/写下任何想法/)).toBeVisible();
+    await expect(page.getByText('想法节点')).toBeVisible();
   });
 
   test('switches to zen mode and renders graph canvas', async ({ page }) => {

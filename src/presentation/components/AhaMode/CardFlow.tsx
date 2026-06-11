@@ -1,11 +1,21 @@
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAppStore } from '@presentation/stores/appStore';
 import { detectOrphanNodes } from '@domain/graph-engine/GraphEngine';
 
 export function CardFlow() {
-  const nodes = useAppStore((s) => s.graphData.nodes.filter((n) => n.status !== 'archived'));
-  const orphanIds = new Set(detectOrphanNodes(useAppStore.getState().graphData));
+  const graphData = useAppStore((s) => s.graphData);
   const selectNode = useAppStore((s) => s.selectNode);
+
+  const nodes = useMemo(
+    () => graphData.nodes.filter((n) => n.status !== 'archived'),
+    [graphData.nodes],
+  );
+
+  const orphanIds = useMemo(
+    () => new Set(detectOrphanNodes(graphData)),
+    [graphData],
+  );
 
   return (
     <div className="flex flex-col h-full">
