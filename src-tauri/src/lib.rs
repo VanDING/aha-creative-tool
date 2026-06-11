@@ -1,12 +1,10 @@
 mod fs_commands;
 mod git_commands;
 
-use tauri::Manager;
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     println!("[AHA] Starting Tauri application...");
-    
+
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_keyring::init())
@@ -31,11 +29,12 @@ pub fn run() {
             git_commands::git_create_tag,
             git_commands::git_list_tags,
         ])
-        .setup(|app| {
+        .setup(|_app| {
             println!("[AHA] Tauri setup complete.");
             #[cfg(debug_assertions)]
             {
-                let window = app.get_webview_window("main").unwrap();
+                use tauri::Manager;
+                let window = _app.get_webview_window("main").unwrap();
                 window.open_devtools();
                 println!("[AHA] DevTools opened.");
             }
@@ -43,6 +42,6 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-    
+
     println!("[AHA] Tauri application exited.");
 }
