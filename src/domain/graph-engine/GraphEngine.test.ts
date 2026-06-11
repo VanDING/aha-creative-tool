@@ -11,6 +11,7 @@ import {
   toG6Format,
   detectMainPath,
   findShortestPath,
+  detectOrphanNodes,
 } from './GraphEngine';
 import { GraphData, ThoughtNode } from './types';
 
@@ -280,5 +281,44 @@ describe('findShortestPath', () => {
   it('returns self when from === to', () => {
     const a = makeNode('A');
     expect(findShortestPath(a.id, a.id, makeGraph(a))).toEqual([a.id]);
+  });
+});
+
+describe('detectOrphanNodes', () => {
+  it('returns empty for fully connected graph', () => {
+    const a = makeNode('A');
+    const b = makeNode('B');
+    const gd = makeGraph(a, b);
+    const gd2 = addEdge(gd, a.id, b.id, 'user-confirmed');
+    expect(detectOrphanNodes(gd2)).toHaveLength(0);
+  });
+
+  it('detects nodes with no edges', () => {
+    const a = makeNode('A');
+    const b = makeNode('B');
+    const c = makeNode('C');
+    const gd = makeGraph(a, b, c);
+    const gd2 = addEdge(gd, a.id, b.id, 'user-confirmed');
+    const orphans = detectOrphanNodes(gd2);
+    expect(orphans).toContain(c.id);
+    expect(orphans).not.toContain(a.id);
+    expect(orphans).not.toContain(b.id);
+  });
+
+  it('treats ai-suggested edges as connections', () => {
+    const a = makeNode('A');
+    const b = makeNode('B');
+    const gd = makeGraph(a, b);
+    const gd2 = addEdge(gd, a.id, b.id, 'ai-suggested', '', 0.7);
+    expect(detectOrphanNodes(gd2)).toHaveLength(0);
+  });
+
+  it('excludes archived nodes from orphans', () => {
+    const a = makeNode('A');
+    a.status = 'active';
+    const b = makeNode('B');
+    b.status = 'archived';
+    const gd = makeGraph(a, b);
+    expect(detectOrphanNodes(gd)).toEqual([a.id]);
   });
 });

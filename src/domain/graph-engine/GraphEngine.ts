@@ -389,6 +389,25 @@ export function detectMainPath(startNodeId: string, graphData: GraphData): strin
 }
 
 /**
+ * Detect nodes that have zero edges (completely disconnected from the graph).
+ * These are "orphan" ideas that may indicate deviation from the project focus.
+ */
+export function detectOrphanNodes(graphData: GraphData): string[] {
+  const connected = new Set<string>();
+  for (const edge of graphData.edges) {
+    connected.add(edge.sourceId);
+    connected.add(edge.targetId);
+  }
+  for (const edge of graphData.aiSuggestions) {
+    connected.add(edge.sourceId);
+    connected.add(edge.targetId);
+  }
+  return graphData.nodes
+    .filter((n) => !connected.has(n.id) && n.status === 'active')
+    .map((n) => n.id);
+}
+
+/**
  * Find the shortest directed path from `fromId` to `toId` using BFS.
  * Returns an ordered list of node ids, or an empty array if unreachable.
  */
