@@ -6,7 +6,10 @@ import { useRef } from 'react';
 import { Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAppStore } from '@presentation/stores/appStore';
+import { useChatStore } from '@presentation/stores/chatStore';
 import { applicationService } from '@application/services/ApplicationService';
+import { useAIChat } from '@presentation/hooks/useAIChat';
+import { AIService } from '@application/services/AIService';
 
 export interface QuickInputProps {
   onSubmit?: (content: string) => void;
@@ -18,18 +21,67 @@ export function QuickInput({ onSubmit }: QuickInputProps) {
   const setAhaInputBuffer = useAppStore((state) => state.setAhaInputBuffer);
   const addNode = useAppStore((state) => state.addNode);
   const projectPath = useAppStore((state) => state.currentProjectPath);
+  const { send } = useAIChat();
 
   const handleSubmit = async () => {
     const raw = ahaInputBuffer.trim();
     if (!raw) return;
 
-    const node = await applicationService.handleNewThought(raw, projectPath);
-    addNode(node);
-    onSubmit?.(raw);
     setAhaInputBuffer('');
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
+
+    // Split + create nodes
+    const nodes = await applicationService.handleNewThoughts(raw, projectPath);
+    for (const node of nodes) {
+      addNode(node);
+    }
+
+    // Also add user message to chat
+    if (nodes.length > 0) {
+      useChatStore.getState().addMessage({
+        role: 'user',
+        content: raw,
+      });
+    }
+
+    // Trigger AI association scan (background, fire-and-forget)
+    const ai = AIService.getInstance();
+    if (ai.isConfigured) {
+      const state = useAppStore.getState();
+      for (const node of nodes) {
+        void ai.scanAssociationsForNode(node, state.graphData).then((associations) => {
+          if (associations.length > 0) {
+            // Add AI suggestions to graphData
+            const currentState = useAppStore.getState();
+            const aiSuggestions = associations.map((a) => ({
+              id: `ais-${node.id}-${a.nodeBId}-${Date.now()}`,
+              sourceId: node.id,
+              targetId: a.nodeBId,
+              type: 'ai-suggested' as const,
+              confidence: a.strength,
+              reason: a.reason,
+              label: a.reason,
+            }));
+            useAppStore.setState({
+              graphData: {
+                ...currentState.graphData,
+                aiSuggestions: [
+                  ...currentState.graphData.aiSuggestions,
+                  ...aiSuggestions,
+                ],
+              },
+            });
+          }
+        });
+      }
+    }
+
+    // Auto-generate AI response to the new thoughts
+    void send(raw, 'aha-ai');
+
+    onSubmit?.(raw);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
