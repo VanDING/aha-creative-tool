@@ -279,11 +279,24 @@ export function toG6Format(graphData: GraphData, options?: ToG6FormatOptions): G
 
   const labelFill = dark ? '#e5e7eb' : '#1a1a1a';
 
+  // Compute orphan node ids (nodes with zero connections)
+  const connectedNodeIds = new Set<string>();
+  for (const e of graphData.edges) {
+    connectedNodeIds.add(e.sourceId);
+    connectedNodeIds.add(e.targetId);
+  }
+  for (const e of graphData.aiSuggestions) {
+    connectedNodeIds.add(e.sourceId);
+    connectedNodeIds.add(e.targetId);
+  }
+
   const nodes: G6NodeData[] = graphData.nodes.map((node) => {
     const base: G6NodeData = {
       id: node.id,
       data: { ...node },
     };
+
+    const isOrphan = node.status === 'active' && !connectedNodeIds.has(node.id);
 
     if (node.status === 'archived') {
       base.style = {
@@ -294,6 +307,17 @@ export function toG6Format(graphData: GraphData, options?: ToG6FormatOptions): G
         labelText: node.title,
         labelFill: dark ? '#9ca3af' : '#6b7280',
         opacity: 0.6,
+      };
+    } else if (isOrphan) {
+      base.style = {
+        fill: dark ? '#1f2937' : '#ffffff',
+        stroke: '#f87171',
+        lineWidth: 1.5,
+        r: 22,
+        lineDash: [4, 4],
+        labelText: node.title,
+        labelFill: dark ? '#fca5a5' : '#ef4444',
+        opacity: 0.8,
       };
     } else {
       base.style = {

@@ -16,18 +16,22 @@ import { useAppStore } from '@presentation/stores/appStore';
 import { useThemeStore } from '@presentation/stores/themeStore';
 import { useGraphController } from './GraphControllerContext';
 import { toG6Format } from '@domain/graph-engine/GraphEngine';
+import type { GraphData } from '@domain/graph-engine/types';
 
 export interface GraphCanvasProps {
   /** Callback when a node is clicked. */
   onNodeClick?: (nodeId: string) => void;
   /** Callback when a node is right-clicked. */
   onNodeContextMenu?: (nodeId: string, x: number, y: number) => void;
+  /** Optional override for graph data (e.g. progressive AI reveal). */
+  graphDataOverride?: GraphData;
 }
 
-export function GraphCanvas({ onNodeClick, onNodeContextMenu }: GraphCanvasProps) {
+export function GraphCanvas({ onNodeClick, onNodeContextMenu, graphDataOverride }: GraphCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<G6Graph | null>(null);
-  const graphData = useAppStore((state) => state.graphData);
+  const storeGraphData = useAppStore((state) => state.graphData);
+  const graphData = graphDataOverride ?? storeGraphData;
   const selectNode = useAppStore((state) => state.selectNode);
   const hoverNode = useAppStore((state) => state.hoverNode);
   const selectedNodeId = useAppStore((state) => state.selectedNodeId);
