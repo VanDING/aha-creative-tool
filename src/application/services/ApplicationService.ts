@@ -117,10 +117,7 @@ export class ApplicationService {
    * Handle batch thought input (Aha mode with splitter).
    * Splits raw input into multiple nodes, writes each, returns all.
    */
-  async handleNewThoughts(
-    raw: string,
-    projectPath: string | null,
-  ): Promise<ThoughtNode[]> {
+  async handleNewThoughts(raw: string, projectPath: string | null): Promise<ThoughtNode[]> {
     const { splitIdeas } = await import('@domain/idea-splitter/IdeaSplitter');
     const items = splitIdeas(raw);
     if (items.length === 0) return [];

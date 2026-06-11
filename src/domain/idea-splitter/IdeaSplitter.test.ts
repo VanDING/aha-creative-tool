@@ -49,8 +49,7 @@ describe('splitIdeas', () => {
   });
 
   it('uses first 60 chars as title, full text as content', () => {
-    const longLine =
-      '这是一个非常长的想法它超过了六十个字符限制所以标题会被截断但内容保留完整原文';
+    const longLine = '这是一个非常长的想法它超过了六十个字符限制所以标题会被截断但内容保留完整原文';
     const result = splitIdeas(longLine);
     expect(result[0].title.length).toBeLessThanOrEqual(60);
     expect(result[0].content).toBe(longLine);

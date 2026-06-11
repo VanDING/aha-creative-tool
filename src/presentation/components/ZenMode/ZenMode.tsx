@@ -50,9 +50,7 @@ export function ZenMode() {
     }
   }, [graphData.aiSuggestions.length]);
 
-  const visibleGraphData = revealAISuggestions
-    ? graphData
-    : { ...graphData, aiSuggestions: [] };
+  const visibleGraphData = revealAISuggestions ? graphData : { ...graphData, aiSuggestions: [] };
 
   const [contextMenu, setContextMenu] = useState<{
     nodeId: string;
@@ -85,7 +83,10 @@ export function ZenMode() {
         <GraphControllerProvider>
           <GraphToolbar />
           <div className="flex-1">
-            <GraphCanvas onNodeContextMenu={handleNodeContextMenu} graphDataOverride={visibleGraphData} />
+            <GraphCanvas
+              onNodeContextMenu={handleNodeContextMenu}
+              graphDataOverride={visibleGraphData}
+            />
           </div>
         </GraphControllerProvider>
         <NodeCard />

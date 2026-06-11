@@ -8,13 +8,9 @@ export function ZenChatView() {
   const selectedNodeId = useAppStore((s) => s.selectedNodeId);
   const graphData = useAppStore((s) => s.graphData);
 
-  const selectedNode = selectedNodeId
-    ? graphData.nodes.find((n) => n.id === selectedNodeId)
-    : null;
+  const selectedNode = selectedNodeId ? graphData.nodes.find((n) => n.id === selectedNodeId) : null;
 
-  const contextLabel = selectedNode
-    ? `节点: ${selectedNode.title}`
-    : '整体脉络';
+  const contextLabel = selectedNode ? `节点: ${selectedNode.title}` : '整体脉络';
 
   const handleSend = useCallback(
     (content: string) => {

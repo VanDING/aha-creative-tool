@@ -55,13 +55,13 @@ export function ChatView({
         className="flex items-center gap-3 px-5 py-3.5 shrink-0"
         style={{ backgroundColor: 'var(--surface-elevated)' }}
       >
-        <div
-          className="w-2.5 h-2.5 rounded-full"
-          style={{ backgroundColor: personaColor }}
-        />
+        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: personaColor }} />
         <span className="text-sm font-semibold tracking-tight">{personaName}</span>
         {isStreaming && (
-          <span className="ml-auto text-[11px] font-medium tracking-wide" style={{ color: 'var(--text-muted)' }}>
+          <span
+            className="ml-auto text-[11px] font-medium tracking-wide"
+            style={{ color: 'var(--text-muted)' }}
+          >
             正在思考…
           </span>
         )}

@@ -49,10 +49,7 @@ export function AhaMode() {
             useAppStore.setState({
               graphData: {
                 ...currentState.graphData,
-                aiSuggestions: [
-                  ...currentState.graphData.aiSuggestions,
-                  ...aiSuggestions,
-                ],
+                aiSuggestions: [...currentState.graphData.aiSuggestions, ...aiSuggestions],
               },
             });
           }

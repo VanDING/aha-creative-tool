@@ -8,7 +8,10 @@ export function AIStatusBar() {
 
   if (!isConfigured) {
     return (
-      <span className="text-[11px] font-medium tracking-wide" style={{ color: 'var(--text-muted)' }}>
+      <span
+        className="text-[11px] font-medium tracking-wide"
+        style={{ color: 'var(--text-muted)' }}
+      >
         AI 未配置
       </span>
     );
@@ -16,7 +19,10 @@ export function AIStatusBar() {
 
   if (nodeCount === 0) {
     return (
-      <span className="text-[11px] font-medium tracking-wide" style={{ color: 'var(--text-muted)' }}>
+      <span
+        className="text-[11px] font-medium tracking-wide"
+        style={{ color: 'var(--text-muted)' }}
+      >
         等待第一个想法
       </span>
     );

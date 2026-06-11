@@ -12,10 +12,7 @@ export function CardFlow() {
     [graphData.nodes],
   );
 
-  const orphanIds = useMemo(
-    () => new Set(detectOrphanNodes(graphData)),
-    [graphData],
-  );
+  const orphanIds = useMemo(() => new Set(detectOrphanNodes(graphData)), [graphData]);
 
   return (
     <div className="flex flex-col h-full">
@@ -26,7 +23,10 @@ export function CardFlow() {
           borderBottom: '1px solid var(--border)',
         }}
       >
-        <span className="text-xs font-semibold tracking-wide" style={{ color: 'var(--text-muted)' }}>
+        <span
+          className="text-xs font-semibold tracking-wide"
+          style={{ color: 'var(--text-muted)' }}
+        >
           想法节点
         </span>
         <span
@@ -63,7 +63,10 @@ export function CardFlow() {
                 onClick={() => selectNode(node.id)}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-medium truncate flex-1 leading-snug" style={{ color: 'var(--text)' }}>
+                  <p
+                    className="text-sm font-medium truncate flex-1 leading-snug"
+                    style={{ color: 'var(--text)' }}
+                  >
                     {node.title}
                   </p>
                   <div className="flex items-center gap-1.5 shrink-0">
@@ -94,7 +97,10 @@ export function CardFlow() {
                   </div>
                 </div>
                 {node.content !== node.title && (
-                  <p className="text-xs mt-1.5 line-clamp-2 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                  <p
+                    className="text-xs mt-1.5 line-clamp-2 leading-relaxed"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
                     {node.content.slice(0, 120)}
                   </p>
                 )}
@@ -111,7 +117,16 @@ export function CardFlow() {
                 color: 'var(--text-muted)',
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M12 5v14M5 12h14" />
               </svg>
             </div>

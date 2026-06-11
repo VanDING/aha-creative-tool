@@ -2,27 +2,27 @@
 
 @theme {
   /* Aha mode — warm paper studio */
-  --color-aha-bg: #F3EFE8;
-  --color-aha-surface: #FFFFFF;
-  --color-aha-surface-elevated: #FAF8F5;
-  --color-aha-text: #1C1917;
-  --color-aha-text-muted: #78716C;
-  --color-aha-border: #E7E5E4;
-  --color-aha-accent: #C4884A;
-  --color-aha-accent-hover: #B0783D;
-  --color-aha-zen-bg: #1C1917;
+  --color-aha-bg: #f3efe8;
+  --color-aha-surface: #ffffff;
+  --color-aha-surface-elevated: #faf8f5;
+  --color-aha-text: #1c1917;
+  --color-aha-text-muted: #78716c;
+  --color-aha-border: #e7e5e4;
+  --color-aha-accent: #c4884a;
+  --color-aha-accent-hover: #b0783d;
+  --color-aha-zen-bg: #1c1917;
   --color-aha-zen-surface: #292524;
   --color-aha-zen-surface-elevated: #353230;
-  --color-aha-zen-text: #F5F5F4;
-  --color-aha-zen-text-muted: #A8A29E;
-  --color-aha-zen-border: #44403C;
-  --color-aha-zen-accent: #6B9FBF;
-  --color-aha-zen-accent-hover: #5A8EAE;
-  --color-aha-ai: #8B5CF6;
-  --color-aha-ai-light: #EDE9FE;
-  --color-aha-confirmed: #7BA395;
-  --color-aha-suggested: #D4A574;
-  --color-aha-orphan: #D4847C;
+  --color-aha-zen-text: #f5f5f4;
+  --color-aha-zen-text-muted: #a8a29e;
+  --color-aha-zen-border: #44403c;
+  --color-aha-zen-accent: #6b9fbf;
+  --color-aha-zen-accent-hover: #5a8eae;
+  --color-aha-ai: #8b5cf6;
+  --color-aha-ai-light: #ede9fe;
+  --color-aha-confirmed: #7ba395;
+  --color-aha-suggested: #d4a574;
+  --color-aha-orphan: #d4847c;
 }
 
 /* Aha mode — warm, calm */
@@ -58,17 +58,17 @@
 /* Explicit dark theme override (used by the theme toggle) */
 html[data-theme='dark'] [data-mode='aha'],
 html[data-theme='dark'] [data-mode='zen'] {
-  --bg: #1C1917;
+  --bg: #1c1917;
   --surface: #292524;
   --surface-elevated: #353230;
-  --text: #F5F5F4;
-  --text-muted: #A8A29E;
-  --border: #44403C;
-  --accent: #6B9FBF;
-  --accent-hover: #5A8EAE;
-  --confirmed: #7BA395;
-  --suggested: #D4A574;
-  --orphan: #D4847C;
+  --text: #f5f5f4;
+  --text-muted: #a8a29e;
+  --border: #44403c;
+  --accent: #6b9fbf;
+  --accent-hover: #5a8eae;
+  --confirmed: #7ba395;
+  --suggested: #d4a574;
+  --orphan: #d4847c;
 }
 
 body {
@@ -93,8 +93,13 @@ body {
 
 /* Orphan node breathing animation */
 @keyframes orphan-breathe {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .orphan-breathe {
@@ -103,8 +108,13 @@ body {
 
 /* Inspiration pulse for input */
 @keyframes inspiration-pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.8; }
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .inspiration-pulse {

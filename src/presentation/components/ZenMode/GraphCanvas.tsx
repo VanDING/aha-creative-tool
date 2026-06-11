@@ -27,7 +27,11 @@ export interface GraphCanvasProps {
   graphDataOverride?: GraphData;
 }
 
-export function GraphCanvas({ onNodeClick, onNodeContextMenu, graphDataOverride }: GraphCanvasProps) {
+export function GraphCanvas({
+  onNodeClick,
+  onNodeContextMenu,
+  graphDataOverride,
+}: GraphCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<G6Graph | null>(null);
   const storeGraphData = useAppStore((state) => state.graphData);

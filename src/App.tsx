@@ -28,10 +28,7 @@ function App() {
           {mode === 'aha' ? <AhaMode /> : <ZenMode />}
         </motion.div>
       </AnimatePresence>
-      <AISettingsModal
-        isOpen={isAISettingsOpen}
-        onClose={useAppStore.getState().closeAISettings}
-      />
+      <AISettingsModal isOpen={isAISettingsOpen} onClose={useAppStore.getState().closeAISettings} />
     </div>
   );
 }
