@@ -11,12 +11,12 @@ import { SearchPanel } from './SearchPanel';
 import { ExportDialog } from '../ExportDialog/ExportDialog';
 import { SummaryModal } from '../SummaryModal/SummaryModal';
 import { ZenChatView } from './ZenChatView';
+import { SettingsEntry } from '../common/SettingsEntry';
 import { useAppStore } from '@presentation/stores/appStore';
 import { useKeyboardShortcuts } from '@presentation/hooks/useKeyboardShortcuts';
 import { AIService } from '@application/services/AIService';
 import type { AIGatewayLike } from '@domain/ai-engine/AIEngine';
 
-/** Use the real AIService as gateway for ExtensionPanel */
 const realGateway: AIGatewayLike = {
   async *streamGenerate(taskType, options) {
     const ai = AIService.getInstance();
@@ -37,7 +37,6 @@ export function ZenMode() {
   const closeSummary = useAppStore((s) => s.closeSummary);
   const graphData = useAppStore((s) => s.graphData);
 
-  // Progressive AI edge reveal
   const [revealAISuggestions, setRevealAISuggestions] = useState(false);
   const hasRevealed = useRef(false);
 
@@ -46,7 +45,7 @@ export function ZenMode() {
       const timer = setTimeout(() => {
         setRevealAISuggestions(true);
         hasRevealed.current = true;
-      }, 1500); // 1.5s delay after mount
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [graphData.aiSuggestions.length]);
@@ -79,13 +78,15 @@ export function ZenMode() {
     >
       {/* Left: Graph Canvas */}
       <motion.div
-        className="h-full border-r relative overflow-hidden"
-        style={{ width: '60%', borderColor: 'var(--border)' }}
+        className="h-full relative overflow-hidden flex flex-col"
+        style={{ width: '65%', borderRight: '1px solid var(--border)' }}
         layout
       >
         <GraphControllerProvider>
           <GraphToolbar />
-          <GraphCanvas onNodeContextMenu={handleNodeContextMenu} graphDataOverride={visibleGraphData} />
+          <div className="flex-1">
+            <GraphCanvas onNodeContextMenu={handleNodeContextMenu} graphDataOverride={visibleGraphData} />
+          </div>
         </GraphControllerProvider>
         <NodeCard />
         <ExtensionPanel gateway={realGateway} />
@@ -106,12 +107,17 @@ export function ZenMode() {
       </motion.div>
 
       {/* Right: Chat */}
-      <motion.div
-        className="h-full"
-        style={{ width: '40%' }}
-        layout
-      >
+      <motion.div className="h-full flex flex-col" style={{ width: '35%' }} layout>
         <ZenChatView />
+        <div
+          className="shrink-0 px-4 py-2.5 flex items-center justify-between"
+          style={{
+            backgroundColor: 'var(--surface-elevated)',
+            borderTop: '1px solid var(--border)',
+          }}
+        >
+          <SettingsEntry />
+        </div>
       </motion.div>
     </motion.div>
   );

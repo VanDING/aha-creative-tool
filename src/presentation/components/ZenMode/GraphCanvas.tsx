@@ -65,13 +65,13 @@ export function GraphCanvas({ onNodeClick, onNodeContextMenu, graphDataOverride 
         state: {
           selected: {
             lineWidth: 4,
-            stroke: resolvedTheme === 'dark' ? '#7ec8e3' : '#d4a574',
-            shadowColor: resolvedTheme === 'dark' ? '#7ec8e3' : '#d4a574',
+            stroke: resolvedTheme === 'dark' ? '#6B9FBF' : '#C4884A',
+            shadowColor: resolvedTheme === 'dark' ? '#6B9FBF' : '#C4884A',
             shadowBlur: 10,
           },
           hover: {
             lineWidth: 3,
-            stroke: resolvedTheme === 'dark' ? '#7ec8e3' : '#d4a574',
+            stroke: resolvedTheme === 'dark' ? '#6B9FBF' : '#C4884A',
           },
         },
       },
@@ -92,7 +92,7 @@ export function GraphCanvas({ onNodeClick, onNodeContextMenu, graphDataOverride 
           trigger: ['click'],
         } as never,
       ],
-      plugins: ['minimap'],
+      plugins: [],
       animation: {
         duration: 300,
         easing: 'ease-in-out-sine',

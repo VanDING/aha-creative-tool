@@ -10,20 +10,27 @@ export function ModeSwitch({ mode, onSwitch }: ModeSwitchProps) {
 
   return (
     <motion.button
-      className="fixed top-4 right-4 z-50 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-md"
+      className="fixed top-4 right-4 z-50 px-4 py-2 rounded-xl text-sm font-semibold tracking-tight transition-colors shadow-sm"
       style={{
-        background: isAha ? 'var(--color-aha-zen-bg)' : 'var(--color-aha-bg)',
-        color: isAha ? 'var(--color-aha-zen-text)' : 'var(--color-aha-text)',
-        border: `1px solid ${isAha ? 'var(--color-aha-zen-accent)' : 'var(--color-aha-border)'}`,
+        backgroundColor: 'var(--surface)',
+        color: 'var(--text)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
       }}
       onClick={() => onSwitch(isAha ? 'zen' : 'aha')}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {isAha ? 'Zen 模式' : 'Aha 模式'}
+      <span className="flex items-center gap-2">
+        <span
+          className="w-2 h-2 rounded-full"
+          style={{ backgroundColor: isAha ? '#C4884A' : '#6B9FBF' }}
+        />
+        {isAha ? 'Zen 模式' : 'Aha 模式'}
+      </span>
     </motion.button>
   );
 }

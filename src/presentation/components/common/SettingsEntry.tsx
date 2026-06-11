@@ -7,11 +7,12 @@ export function SettingsEntry() {
   return (
     <button
       onClick={openAISettings}
-      className="fixed bottom-4 left-4 z-50 p-2 rounded-full transition-colors hover:opacity-80"
-      style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}
+      className="flex items-center gap-1.5 text-[11px] font-medium tracking-wide transition-opacity hover:opacity-70"
+      style={{ color: 'var(--text-muted)' }}
       title="AI 设置"
     >
-      <Settings size={18} />
+      <Settings size={14} />
+      <span>设置</span>
     </button>
   );
 }

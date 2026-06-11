@@ -7,7 +7,7 @@ test.describe('AHA Smoke Tests', () => {
 
   test('loads aha mode with chat and card flow', async ({ page }) => {
     await expect(page.getByText('AHA-AI')).toBeVisible();
-    await expect(page.getByPlaceholder(/写下任何想法/)).toBeVisible();
+    await expect(page.getByPlaceholder(/继续说你的想法/)).toBeVisible();
     await expect(page.getByText('想法节点')).toBeVisible();
   });
 

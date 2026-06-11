@@ -18,7 +18,6 @@ export function ZenChatView() {
 
   const handleSend = useCallback(
     (content: string) => {
-      // If a node is selected, prepend context hint
       if (selectedNode) {
         const contextualContent = `[关于节点「${selectedNode.title}」] ${content}`;
         send(contextualContent, 'zen-ai');
@@ -32,7 +31,7 @@ export function ZenChatView() {
   return (
     <ChatView
       persona="zen-ai"
-      personaColor="#3b82f6"
+      personaColor="#6B9FBF"
       personaName="ZEN-AI"
       onSend={handleSend}
       onCancel={cancel}

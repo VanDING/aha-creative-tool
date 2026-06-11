@@ -8,24 +8,28 @@ export function AIStatusBar() {
 
   if (!isConfigured) {
     return (
-      <div
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs z-30"
-        style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}
-      >
-        配置 AI 后，你的想法将自动产生关联
-      </div>
+      <span className="text-[11px] font-medium tracking-wide" style={{ color: 'var(--text-muted)' }}>
+        AI 未配置
+      </span>
     );
   }
 
-  if (nodeCount === 0) return null;
+  if (nodeCount === 0) {
+    return (
+      <span className="text-[11px] font-medium tracking-wide" style={{ color: 'var(--text-muted)' }}>
+        等待第一个想法
+      </span>
+    );
+  }
 
   return (
-    <div
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs z-30"
-      style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}
-    >
-      AI 已分析 {nodeCount} 个节点
-      {aiSuggestionsCount > 0 && `，发现 ${aiSuggestionsCount} 组潜在关联`}
-    </div>
+    <span className="text-[11px] font-medium tracking-wide" style={{ color: 'var(--text-muted)' }}>
+      {nodeCount} 个节点
+      {aiSuggestionsCount > 0 && (
+        <span className="ml-2" style={{ color: 'var(--suggested)' }}>
+          {aiSuggestionsCount} 组关联
+        </span>
+      )}
+    </span>
   );
 }

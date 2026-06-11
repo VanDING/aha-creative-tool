@@ -266,18 +266,18 @@ export function toG6Format(graphData: GraphData, options?: ToG6FormatOptions): G
   const dark = options?.dark ?? false;
 
   const statusColor: Record<NodeStatus, string> = {
-    active: dark ? '#1f2937' : '#ffffff',
-    archived: '#6b7280',
-    'main-branch': '#22c55e',
+    active: dark ? '#292524' : '#ffffff',
+    archived: '#78716C',
+    'main-branch': '#7BA395',
   };
 
   const statusStroke: Record<NodeStatus, string> = {
-    active: dark ? '#7ec8e3' : '#d4a574',
-    archived: '#4b5563',
-    'main-branch': '#16a34a',
+    active: dark ? '#6B9FBF' : '#C4884A',
+    archived: '#44403C',
+    'main-branch': '#5A8E8A',
   };
 
-  const labelFill = dark ? '#e5e7eb' : '#1a1a1a';
+  const labelFill = dark ? '#F5F5F4' : '#1C1917';
 
   // Compute orphan node ids (nodes with zero connections)
   const connectedNodeIds = new Set<string>();
@@ -310,14 +310,14 @@ export function toG6Format(graphData: GraphData, options?: ToG6FormatOptions): G
       };
     } else if (isOrphan) {
       base.style = {
-        fill: dark ? '#1f2937' : '#ffffff',
-        stroke: '#f87171',
-        lineWidth: 1.5,
+        fill: dark ? '#292524' : '#ffffff',
+        stroke: '#D4847C',
+        lineWidth: 2,
         r: 22,
         lineDash: [4, 4],
         labelText: node.title,
-        labelFill: dark ? '#fca5a5' : '#ef4444',
-        opacity: 0.8,
+        labelFill: dark ? '#E8B4B0' : '#B86B63',
+        opacity: 0.85,
       };
     } else {
       base.style = {
@@ -341,10 +341,10 @@ export function toG6Format(graphData: GraphData, options?: ToG6FormatOptions): G
     style: {
       stroke:
         edge.type === 'main-path'
-          ? '#22c55e'
+          ? '#7BA395'
           : edge.type === 'user-confirmed'
-            ? '#d4a574'
-            : '#9ca3af',
+            ? '#C4884A'
+            : '#A8A29E',
       lineWidth: edge.type === 'main-path' ? 3 : 2,
       lineDash: edge.type === 'ai-suggested' ? [5, 5] : undefined,
       endArrow: true,
@@ -357,7 +357,7 @@ export function toG6Format(graphData: GraphData, options?: ToG6FormatOptions): G
     target: edge.targetId,
     data: { ...edge },
     style: {
-      stroke: '#f59e0b',
+      stroke: '#D4A574',
       lineWidth: 1,
       lineDash: [5, 5],
       opacity: 0.4 + (edge.confidence || 0) * 0.6,
